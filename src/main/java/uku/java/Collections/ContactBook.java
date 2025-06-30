@@ -22,12 +22,11 @@ public class ContactBook {
     }
 
     public void addContact(Contact contact) {
-        for (Contact item : contactBook) {
-            if (item.equals(contact)) {
-                System.out.println("Such a contact already exists!");
-                return;
-            }
+        if (contactBook.contains(contact)) {
+            System.out.println("Such a contact already exists!");
+            return;
         }
+
         contactBook.add(contact);
         groupByContacts.computeIfAbsent(contact.getGroup(), k -> new ArrayList<>()).add(contact);
         System.out.println("Contact added!");
