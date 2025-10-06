@@ -7,10 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import uku.java.Testing.Order;
+import uku.java.JavaCore.Testing.Order;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uku.java.Testing.OrderRepository;
-import uku.java.Testing.OrderService;
+import uku.java.JavaCore.Testing.OrderRepository;
+import uku.java.JavaCore.Testing.OrderService;
 
 import java.util.Optional;
 
