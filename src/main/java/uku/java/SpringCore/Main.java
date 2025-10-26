@@ -17,8 +17,5 @@ public class Main {
 
         ApplicationContext context = new AnnotationConfigApplicationContext("uku.java.SpringCore");
         OperationsConsoleListener operationsConsoleListener = context.getBean(OperationsConsoleListener.class);
-//        operationsConsoleListener.receiveCommand();
-//        Thread tread = new Thread(operationsConsoleListener);
-//        tread.start();
     }
 }
