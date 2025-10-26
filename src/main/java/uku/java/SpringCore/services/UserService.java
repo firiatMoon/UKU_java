@@ -29,7 +29,6 @@ public class UserService {
     }
 
     public void createUser(String login){
-        synchronized (users) {
             if(users.stream().anyMatch(user -> user.getLogin().equals(login))){
                 throw new UserException("User already exists");
             }
@@ -40,23 +39,18 @@ public class UserService {
             newUser.getAccountList().add(account);
             users.add(newUser);
             System.out.println(newUser);
-        }
     }
 
     public void showAllUsers(){
-        synchronized (users) {
             if(users.isEmpty()){
                 throw new UserException("No users found");
             }
             users.forEach(System.out::println);
-        }
     }
 
     public void createAccount(Long userId){
-        synchronized (users) {
             Optional<User> user = users.stream().filter(userID -> userID.getId().equals(userId)).findFirst();
             user.ifPresent(value -> value.getAccountList().add(accountService.createAnotherAccount(userId)));
-        }
     }
 
     public Optional<User> findUserByAccountId(Long accountId) {
@@ -78,7 +72,6 @@ public class UserService {
     }
 
     public void closeAccount(Long accountId) {
-        synchronized (users) {
             Optional<User> userOptional = findUserByAccountId(accountId);
             if(userOptional.isPresent()){
                 User user = userOptional.get();
@@ -95,14 +88,12 @@ public class UserService {
                     System.out.println("You only have one account. It is not possible to delete an account.");
                 }
             }
-        }
     }
 
     public void depositAccount(Long accountId, BigDecimal amount){
         if(amount.compareTo(BigDecimal.ZERO) < 0){
             throw new UserException("Amount cannot be negative");
         }
-        synchronized (users) {
             Optional<User> userOptional = findUserByAccountId(accountId);
             if(userOptional.isPresent()){
                 User user = userOptional.get();
@@ -113,7 +104,6 @@ public class UserService {
 
                 account.setMoneyAmount(account.getMoneyAmount().add(amount));
             }
-        }
     }
 
     public void transferMoney(Long fromAccountId, Long toAccountId, BigDecimal amount){
@@ -136,13 +126,11 @@ public class UserService {
                 throw new IllegalStateException("Insufficient funds in the sender's account.");
             }
 
-            synchronized (this) {
                 if (!Objects.equals(to.getUserId(), from.getUserId())){
                     amountToTransfer = amount.multiply(commissionPercentage);
                 }
                 from.setMoneyAmount(from.getMoneyAmount().subtract(amountToTransfer));
                 to.setMoneyAmount(to.getMoneyAmount().add(amount));
-            }
         }
     }
 
@@ -151,7 +139,6 @@ public class UserService {
             throw new UserException("Amount cannot be negative");
         }
 
-        synchronized (this) {
             Optional<Account> accountOptional = findAccountById(accountId);
             if(accountOptional.isPresent()){
                 Account account = accountOptional.get();
@@ -161,6 +148,5 @@ public class UserService {
 
                 account.setMoneyAmount(account.getMoneyAmount().subtract(amount));
             }
-        }
     }
 }
