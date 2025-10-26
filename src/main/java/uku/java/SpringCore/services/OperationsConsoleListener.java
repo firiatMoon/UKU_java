@@ -2,12 +2,13 @@ package uku.java.SpringCore.services;
 
 import org.springframework.stereotype.Component;
 import uku.java.SpringCore.enums.TypeOfOperations;
+import uku.java.SpringCore.exceptions.UserException;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class OperationsConsoleListener implements Runnable{
+public class OperationsConsoleListener {
     private final ConcurrentHashMap<TypeOfOperations, OperationCommand> commandMap;
     private final Scanner scanner;
 
@@ -17,49 +18,33 @@ public class OperationsConsoleListener implements Runnable{
         this.scanner = new Scanner(System.in);
     }
 
-    @Override
-    public void run() {
-        System.out.println("Please enter one of operation type:");
+    private void showCommands(){
+        System.out.printf("%nPlease enter one of operation type:%n");
         EnumSet<TypeOfOperations> typeOfOperations = EnumSet.allOf(TypeOfOperations.class);
         for (TypeOfOperations typeOfOperation : typeOfOperations) {
             System.out.println(typeOfOperation);
         }
-        String typeOfOperation = scanner.nextLine().trim().toUpperCase();
+    }
 
-        while(true){
-            switch (typeOfOperation) {
-                case "USER_CREATE" -> {
-                    handleCommand(TypeOfOperations.USER_CREATE);
-                }
-                case "SHOW_ALL_USERS" -> {
-                    handleCommand(TypeOfOperations.SHOW_ALL_USERS);
-                }
-                case "ACCOUNT_CREATE" -> {
-                    handleCommand(TypeOfOperations.ACCOUNT_CREATE);
-                }
-                case "ACCOUNT_CLOSE" -> {
-                    handleCommand(TypeOfOperations.ACCOUNT_CLOSE);
-                }
-                case "ACCOUNT_DEPOSIT" -> {
-                    handleCommand(TypeOfOperations.ACCOUNT_DEPOSIT);
-                }
-                case "ACCOUNT_TRANSFER" -> {
-                    handleCommand(TypeOfOperations.ACCOUNT_TRANSFER);
-                }
-                case "ACCOUNT_WITHDRAW" -> {
-                    handleCommand(TypeOfOperations.ACCOUNT_WITHDRAW);
-                }
-                default -> System.out.println("Incorrect command, try again.");
+    public void receiveCommand(){
+        while(!Thread.currentThread().isInterrupted()) {
+            showCommands();
+            try{
+                TypeOfOperations typeOfOperation = TypeOfOperations.valueOf(scanner.nextLine());
+                handleCommand(typeOfOperation);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Incorrect command, try again.");
             }
+
         }
     }
 
     private void handleCommand(TypeOfOperations typeCommand) {
         OperationCommand command = commandMap.get(typeCommand);
-        if (command != null) {
+        try {
             command.execute();
-        } else {
-            System.out.println("Command not found.");
+        } catch (UserException ex) {
+            System.out.printf("Error executing command %s: error %s",typeCommand, ex.getMessage());
         }
     }
 }

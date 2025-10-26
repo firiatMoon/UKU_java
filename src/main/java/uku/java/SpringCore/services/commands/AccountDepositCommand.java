@@ -12,20 +12,22 @@ import java.util.Scanner;
 @Component
 public class AccountDepositCommand implements OperationCommand {
     private final UserService userService;
+    private final Scanner scanner;
 
     @Autowired
-    public AccountDepositCommand(UserService userService) {
-        this.userService = userService;;
+    public AccountDepositCommand(UserService userService, Scanner scanner) {
+        this.userService = userService;
+        this.scanner = scanner;
+        ;
     }
 
     @Override
     public void execute() {
-        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter Account ID: ");
         Long accountId = scanner.nextLong();
         System.out.print("Enter Amount to deposit: ");
         BigDecimal amount = scanner.nextBigDecimal();
-        userService.topUpAccount(accountId, amount);
+        userService.depositAccount(accountId, amount);
     }
 
     @Override

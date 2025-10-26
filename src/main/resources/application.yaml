@@ -1,3 +1,2 @@
-account:
-  default-amount: 1000.00
-  transfer-commission: 5
+default-amount: 1000.00
+transfer-commission: 5

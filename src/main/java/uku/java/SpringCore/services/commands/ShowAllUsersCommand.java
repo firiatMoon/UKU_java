@@ -6,6 +6,8 @@ import uku.java.SpringCore.enums.TypeOfOperations;
 import uku.java.SpringCore.services.OperationCommand;
 import uku.java.SpringCore.services.UserService;
 
+import java.util.Scanner;
+
 @Component
 public class ShowAllUsersCommand implements OperationCommand {
     private final UserService userService;

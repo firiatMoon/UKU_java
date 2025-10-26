@@ -11,15 +11,16 @@ import java.util.Scanner;
 @Component
 public class AccountCloseCommand implements OperationCommand {
     private final UserService userService;
+    private final Scanner scanner;
 
     @Autowired
-    public AccountCloseCommand(UserService userService) {
+    public AccountCloseCommand(UserService userService, Scanner scanner) {
         this.userService = userService;
+        this.scanner = scanner;
     }
 
     @Override
     public void execute() {
-        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter Account ID: ");
         userService.closeAccount(scanner.nextLong());
     }

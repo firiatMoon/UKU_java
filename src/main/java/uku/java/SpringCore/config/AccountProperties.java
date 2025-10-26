@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AccountProperties {
 
-    @Value("${account.default-amount}")
+    @Value("${default-amount}")
     private String defaultAmount;
 
-    @Value("${account.transfer-commission}")
+    @Value("${transfer-commission}")
     private String transferCommission;
 
 

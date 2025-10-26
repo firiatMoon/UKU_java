@@ -53,8 +53,10 @@ public class UserService {
     }
 
     public void createAccount(Long userId){
-        Optional<User> user = users.stream().filter(userID -> userID.getId().equals(userId)).findFirst();
-        user.ifPresent(value -> value.getAccountList().add(accountService.createAnotherAccount(userId)));
+        synchronized (users) {
+            Optional<User> user = users.stream().filter(userID -> userID.getId().equals(userId)).findFirst();
+            user.ifPresent(value -> value.getAccountList().add(accountService.createAnotherAccount(userId)));
+        }
     }
 
     public Optional<User> findUserByAccountId(Long accountId) {
@@ -76,36 +78,49 @@ public class UserService {
     }
 
     public void closeAccount(Long accountId) {
-        Optional<User> userOptional = findUserByAccountId(accountId);
-        if(userOptional.isPresent()){
-            User user = userOptional.get();
-            if(user.getAccountList().size() > 1) {
-                Account firstAccount = user.getAccountList().get(0);
-                Account deletedAccount = user.getAccountList().stream()
-                        .filter(account -> account.getId().equals(accountId))
-                        .findFirst()
-                        .get();
+        synchronized (users) {
+            Optional<User> userOptional = findUserByAccountId(accountId);
+            if(userOptional.isPresent()){
+                User user = userOptional.get();
+                if(user.getAccountList().size() > 1) {
+                    Account firstAccount = user.getAccountList().get(0);
+                    Account deletedAccount = user.getAccountList().stream()
+                            .filter(account -> account.getId().equals(accountId))
+                            .findFirst()
+                            .get();
 
-                firstAccount.setMoneyAmount(firstAccount.getMoneyAmount().add(deletedAccount.getMoneyAmount()));
-                user.getAccountList().removeIf(account -> account.getId() == accountId);
+                    firstAccount.setMoneyAmount(firstAccount.getMoneyAmount().add(deletedAccount.getMoneyAmount()));
+                    user.getAccountList().removeIf(account -> Objects.equals(account.getId(), accountId));
+                } else {
+                    System.out.println("You only have one account. It is not possible to delete an account.");
+                }
             }
         }
     }
 
-    public void topUpAccount(Long accountId, BigDecimal amount){
-        Optional<User> userOptional = findUserByAccountId(accountId);
-        if(userOptional.isPresent()){
-            User user = userOptional.get();
-            Account account = user.getAccountList().stream()
-                    .filter(x -> x.getId().equals(accountId))
-                    .findFirst()
-                    .get();
+    public void depositAccount(Long accountId, BigDecimal amount){
+        if(amount.compareTo(BigDecimal.ZERO) < 0){
+            throw new UserException("Amount cannot be negative");
+        }
+        synchronized (users) {
+            Optional<User> userOptional = findUserByAccountId(accountId);
+            if(userOptional.isPresent()){
+                User user = userOptional.get();
+                Account account = user.getAccountList().stream()
+                        .filter(x -> x.getId().equals(accountId))
+                        .findFirst()
+                        .get();
 
-            account.setMoneyAmount(account.getMoneyAmount().add(amount));
+                account.setMoneyAmount(account.getMoneyAmount().add(amount));
+            }
         }
     }
 
     public void transferMoney(Long fromAccountId, Long toAccountId, BigDecimal amount){
+        if(amount.compareTo(BigDecimal.ZERO) < 0){
+            throw new UserException("Amount cannot be negative");
+        }
+
         Optional<Account> accountFrom = findAccountById(fromAccountId);
         Optional<Account> accountTo = findAccountById(toAccountId);
         if(accountFrom.isPresent() && accountTo.isPresent()){
@@ -132,6 +147,10 @@ public class UserService {
     }
 
     public void withdrawMoney(Long accountId, BigDecimal amount){
+        if(amount.compareTo(BigDecimal.ZERO) < 0){
+            throw new UserException("Amount cannot be negative");
+        }
+
         synchronized (this) {
             Optional<Account> accountOptional = findAccountById(accountId);
             if(accountOptional.isPresent()){

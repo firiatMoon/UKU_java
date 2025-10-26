@@ -19,7 +19,7 @@ public class AccountService {
     }
 
     public Account createNewAccount(long userId) {
-        BigDecimal balance = new BigDecimal(1000);
+        BigDecimal balance = new BigDecimal(accountProperties.getDefaultAmount());
         return new Account(countOfAccountId.incrementAndGet(), userId, balance);
     }
 

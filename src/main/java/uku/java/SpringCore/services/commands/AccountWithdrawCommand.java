@@ -12,15 +12,16 @@ import java.util.Scanner;
 @Component
 public class AccountWithdrawCommand implements OperationCommand {
     private final UserService userService;
+    private final Scanner scanner;
 
     @Autowired
-    public AccountWithdrawCommand(UserService userService) {
+    public AccountWithdrawCommand(UserService userService, Scanner scanner) {
         this.userService = userService;
+        this.scanner = scanner;
     }
 
     @Override
     public void execute() {
-        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter from Account ID: ");
         Long accountId = scanner.nextLong();
         System.out.print("Enter amount to transfer: ");

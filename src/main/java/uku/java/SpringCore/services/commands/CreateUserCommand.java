@@ -11,15 +11,16 @@ import java.util.Scanner;
 @Component
 public class CreateUserCommand implements OperationCommand {
     private final UserService userService;
+    private final Scanner scanner;
 
     @Autowired
-    public CreateUserCommand(UserService userService) {
+    public CreateUserCommand(UserService userService, Scanner scanner) {
         this.userService = userService;
+        this.scanner = scanner;
     }
 
     @Override
     public void execute() {
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter login for new user:");
         userService.createUser(scanner.nextLine());
     }
