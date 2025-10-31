@@ -10,7 +10,7 @@ import uku.java.JavaBackend.Hibernate.services.UserService;
 public class ShowAllUsersCommand implements OperationCommand {
     private final UserService userService;
 
-    @Autowired
+
     public ShowAllUsersCommand(UserService userService) {
         this.userService = userService;
     }

@@ -11,7 +11,7 @@ public class ConsoleListenerStarter {
     private final OperationsConsoleListener consoleListener;
     private Thread thread;
 
-    @Autowired
+
     public ConsoleListenerStarter(OperationsConsoleListener consoleListener) {
         this.consoleListener = consoleListener;
     }

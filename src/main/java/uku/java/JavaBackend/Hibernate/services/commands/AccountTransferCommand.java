@@ -14,7 +14,7 @@ public class AccountTransferCommand implements OperationCommand {
     private final AccountService accountService;
     private final Scanner scanner;
 
-    @Autowired
+
     public AccountTransferCommand(AccountService accountService, Scanner scanner) {
         this.accountService = accountService;
         this.scanner = scanner;

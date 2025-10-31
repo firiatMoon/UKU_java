@@ -14,7 +14,7 @@ import java.util.function.Function;
 public class TransactionHelper {
     private final SessionFactory sessionFactory;
 
-    @Autowired
+
     public TransactionHelper(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }

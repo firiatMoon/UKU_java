@@ -14,7 +14,7 @@ public class AccountWithdrawCommand implements OperationCommand {
     private final AccountService accountService;
     private final Scanner scanner;
 
-    @Autowired
+
     public AccountWithdrawCommand(AccountService accountService, Scanner scanner) {
         this.accountService = accountService;
         this.scanner = scanner;

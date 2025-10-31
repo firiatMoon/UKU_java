@@ -18,7 +18,7 @@ public class AccountService {
     private final TransactionHelper transactionHelper;
     private final SessionFactory sessionFactory;
 
-    @Autowired
+
     public AccountService(AccountProperties accountProperties, TransactionHelper transactionHelper, SessionFactory sessionFactory) {
         this.accountProperties = accountProperties;
         this.transactionHelper = transactionHelper;

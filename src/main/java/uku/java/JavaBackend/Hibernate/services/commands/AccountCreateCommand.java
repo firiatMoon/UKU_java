@@ -13,7 +13,7 @@ public class AccountCreateCommand implements OperationCommand {
     private final UserService userService;
     private final Scanner scanner;
 
-    @Autowired
+
     public AccountCreateCommand(UserService userService, Scanner scanner) {
         this.userService = userService;
         this.scanner = scanner;

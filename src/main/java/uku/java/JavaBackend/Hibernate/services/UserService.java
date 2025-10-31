@@ -17,7 +17,7 @@ public class UserService {
     private final AccountService accountService;
     private final SessionFactory sessionFactory;
 
-    @Autowired
+
     public UserService(TransactionHelper transactionHelper,AccountService accountService, SessionFactory sessionFactory) {
         this.transactionHelper = transactionHelper;
         this.accountService = accountService;

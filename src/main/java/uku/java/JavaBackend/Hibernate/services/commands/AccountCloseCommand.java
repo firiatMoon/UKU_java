@@ -13,7 +13,7 @@ public class AccountCloseCommand implements OperationCommand {
     private final AccountService accountService;
     private final Scanner scanner;
 
-    @Autowired
+
     public AccountCloseCommand(AccountService accountService, Scanner scanner) {
         this.accountService = accountService;
         this.scanner = scanner;

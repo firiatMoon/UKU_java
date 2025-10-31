@@ -14,7 +14,7 @@ public class AccountDepositCommand implements OperationCommand {
     private final AccountService accountService;
     private final Scanner scanner;
 
-    @Autowired
+
     public AccountDepositCommand(AccountService accountService, Scanner scanner) {
         this.accountService = accountService;
         this.scanner = scanner;
