@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import uku.java.JavaBackend.MVC.models.UserDTO;
+import uku.java.JavaBackend.MVC.models.User;
 import uku.java.JavaBackend.MVC.services.UserService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,7 +30,7 @@ class UserControllerTest {
 
     @Test
     void shouldSuccessCreateUser() throws Exception {
-        UserDTO user = new UserDTO(
+        User user = new User(
                 null,
                 "Peter",
                 "peter@mail.ru",
@@ -48,14 +48,14 @@ class UserControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        UserDTO createdUser = mapper.readValue(createdUserJson, UserDTO.class);
+        User createdUser = mapper.readValue(createdUserJson, User.class);
         Assertions.assertNotNull(createdUser.getId());
         Assertions.assertEquals(user.getName(), createdUser.getName());
     }
 
     @Test
     void shouldNotCreateUserWhenRequestNotValid() throws Exception {
-        UserDTO user = new UserDTO(
+        User user = new User(
                 null,
                 "Peter",
                 "peter@mail.ru",
@@ -73,7 +73,7 @@ class UserControllerTest {
 
     @Test
     void shouldSuccessSearchUserById() throws Exception {
-        UserDTO user = new UserDTO(
+        User user = new User(
                 null,
                 "Peter",
                 "peter@mail.ru",
@@ -88,7 +88,7 @@ class UserControllerTest {
                .getResponse()
                .getContentAsString();
 
-        UserDTO foundUser = mapper.readValue(foundUserJson, UserDTO.class);
+        User foundUser = mapper.readValue(foundUserJson, User.class);
         org.assertj.core.api.Assertions.assertThat(user)
                 .usingRecursiveComparison()
                 .isEqualTo(foundUser);
@@ -96,7 +96,7 @@ class UserControllerTest {
 
     @Test
     void shouldReturnNotFoundWhenUserNotPresent() throws Exception {
-       mockMvc.perform(get("/users/{id}", Integer.MAX_VALUE))
+       mockMvc.perform(get("/users/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 }

@@ -4,26 +4,26 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PetDTO {
+public class Pet {
 
     @Null
     private Long id;
 
-    @NotBlank
-    @Size(max=30)
+    @NotBlank(message = "Please enter your name.")
+    @Size(max=30, message = "The name length must not exceed 30 characters.")
     private String name;
 
-    @NotNull
-    @Positive
+    @NotNull(message = "The value must not be empty.")
+    @Positive(message = "The value must be positive.")
     private Long user;
 
-    public PetDTO(Long id, String name, Long user) {
+    public Pet(Long id, String name, Long user) {
         this.id = id;
         this.name = name;
         this.user = user;
     }
 
-    public PetDTO() {}
+    public Pet() {}
 
     public Long getId() {
         return id;

@@ -4,10 +4,11 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uku.java.JavaBackend.MVC.models.UserDTO;
+import uku.java.JavaBackend.MVC.models.User;
 import uku.java.JavaBackend.MVC.services.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -21,23 +22,23 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.getAllUsers());
     }
 
     @PostMapping()
-    public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserDTO user) {
-        UserDTO createdUser = userService.createUser(user);
+    public ResponseEntity<User> createUser(@RequestBody @Valid User user) {
+        User createdUser = userService.createUser(user);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdUser);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable("id") Long id) {
-        UserDTO user = userService.getUserById(id);
+    public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
+        User user = userService.getUserById(id);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(user);
@@ -52,8 +53,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long id, @RequestBody @Valid UserDTO user) {
-        UserDTO updatedUser = userService.updateUser(id, user);
+    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody @Valid User user) {
+        User updatedUser = userService.updateUser(id, user);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(updatedUser);

@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uku.java.JavaBackend.MVC.models.PetDTO;
+import uku.java.JavaBackend.MVC.models.Pet;
 import uku.java.JavaBackend.MVC.services.PetService;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class PetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PetDTO>> getAllPets() {
+    public ResponseEntity<List<Pet>> getAllPets() {
         return ResponseEntity.
                 status(HttpStatus.OK)
                 .body(petService.getAllPets());
@@ -28,23 +28,23 @@ public class PetController {
 
 
     @PostMapping
-    public ResponseEntity<PetDTO> createPet(@RequestBody @Valid PetDTO petDTO) {
-        PetDTO createdPet = petService.createPet(petDTO);
+    public ResponseEntity<Pet> createPet(@RequestBody @Valid Pet pet) {
+        Pet createdPet = petService.createPet(pet);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdPet);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PetDTO> getPet(@PathVariable("id") Long id) {
-        PetDTO pet = petService.getPetById(id);
+    public ResponseEntity<Pet> getPet(@PathVariable("id") Long id) {
+        Pet pet = petService.getPetById(id);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(pet);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePet(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deletePet(@PathVariable("id") Long id) {
         petService.deletePetById(id);
         return ResponseEntity.
                 status(HttpStatus.NO_CONTENT)
@@ -52,8 +52,8 @@ public class PetController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PetDTO> updatePet(@PathVariable("id") Long id, @RequestBody @Valid PetDTO petDTO) {
-        PetDTO updatedPet = petService.updatePet(id, petDTO);
+    public ResponseEntity<Pet> updatePet(@PathVariable("id") Long id, @RequestBody @Valid Pet pet) {
+        Pet updatedPet = petService.updatePet(id, pet);
         return  ResponseEntity
                 .status(HttpStatus.OK)
                 .body(updatedPet);

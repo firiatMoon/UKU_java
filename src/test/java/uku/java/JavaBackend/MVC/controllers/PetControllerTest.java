@@ -8,11 +8,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import uku.java.JavaBackend.MVC.models.PetDTO;
+import uku.java.JavaBackend.MVC.models.Pet;
+import uku.java.JavaBackend.MVC.models.User;
 import uku.java.JavaBackend.MVC.services.PetService;
+import uku.java.JavaBackend.MVC.services.UserService;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -25,14 +26,28 @@ class PetControllerTest {
     @Autowired
     private PetService petService;
 
+    @Autowired
+    private UserService userService;
+
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void shouldSuccessCreatePet() throws Exception {
-        PetDTO pet = new PetDTO(
+        User user = new User(
+                1L,
+                "Peter",
+                "peter@mail.ru",
+                23,
+                null
+        );
+
+        user = userService.createUser(user);
+        Assertions.assertNotNull(user.getId());
+
+        Pet pet = new Pet(
                 null,
                 "name-pet",
-                2L
+                1L
         );
 
         String petJson = mapper.writeValueAsString(pet);
@@ -45,15 +60,16 @@ class PetControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        PetDTO createdPet = mapper.readValue(createdPetJson, PetDTO.class);
+        Pet createdPet = mapper.readValue(createdPetJson, Pet.class);
 
         Assertions.assertNotNull(createdPet.getId());
-        Assertions.assertEquals(pet.getUser(), createdPet.getUser());
+        Assertions.assertEquals(pet.getName(), createdPet.getName());
+
     }
 
     @Test
     void shouldNotCreatePetWhenRequestNotValid() throws Exception {
-        PetDTO pet = new PetDTO(
+        Pet pet = new Pet(
                 null,
                 "name-pet",
                 null
@@ -69,13 +85,25 @@ class PetControllerTest {
 
     @Test
     void shouldDeletePet() throws Exception {
-        PetDTO pet = new PetDTO(
+        User user = new User(
+                1L,
+                "Peter",
+                "peter@mail.ru",
+                23,
+                null
+        );
+
+        user = userService.createUser(user);
+        Assertions.assertNotNull(user.getId());
+
+        Pet pet = new Pet(
                 null,
                 "name-pet",
-                2L
+                1L
         );
 
         pet = petService.createPet(pet);
+        Assertions.assertNotNull(pet.getId());
 
         mockMvc.perform(delete("/pets/{id}", pet.getId()))
                 .andExpect(status().isNoContent());

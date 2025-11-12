@@ -5,27 +5,27 @@ import jakarta.validation.constraints.*;
 
 import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO {
+public class User {
     @Null
     private Long id;
 
-    @NotBlank
-    @Size(max=30)
+    @NotBlank(message = "Please enter your name.")
+    @Size(max=30, message = "The name length must not exceed 30 characters.")
     private String name;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "Please enter your email address.")
+    @Email(message = "Please enter a valid email address.")
     private String email;
 
-    @Positive
-    @NotNull(message = "Возраст обязателен")
-    @Min(value = 18, message = "Минимальный возраст - 18 лет")
+    @Positive(message = "The value must be positive.")
+    @NotNull(message = "Please enter your age.")
+    @Min(value = 18, message = "Minimum age: 18 years.")
     private Integer age;
 
     @Null
-    private List<PetDTO> pets;
+    private List<Pet> pets;
 
-    public UserDTO(Long id, String name, String email, Integer age, List<PetDTO> pets) {
+    public User(Long id, String name, String email, Integer age, List<Pet> pets) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -33,7 +33,7 @@ public class UserDTO {
         this.pets = pets;
     }
 
-    public UserDTO() {}
+    public User() {}
 
     public Long getId() {
         return id;
@@ -67,11 +67,11 @@ public class UserDTO {
         this.age = age;
     }
 
-    public List<PetDTO> getPets() {
+    public List<Pet> getPets() {
         return pets;
     }
 
-    public void setPets(List<PetDTO> pets) {
+    public void setPets(List<Pet> pets) {
         this.pets = pets;
     }
 }

@@ -1,15 +1,15 @@
 package uku.java.JavaBackend.MVC.services;
 
 import org.springframework.stereotype.Service;
-import uku.java.JavaBackend.MVC.models.PetDTO;
-import uku.java.JavaBackend.MVC.models.UserDTO;
+import uku.java.JavaBackend.MVC.models.Pet;
+import uku.java.JavaBackend.MVC.models.User;
 
 import java.util.*;
 
 @Service
 public class UserService {
 
-    private final Map<Long, UserDTO> mapUsers;
+    private final Map<Long, User> mapUsers;
     private final PetService petService;
     private Long idCount;
 
@@ -19,46 +19,40 @@ public class UserService {
         this.idCount = 0L;
     }
 
-    public UserDTO createUser(UserDTO user) {
-        UserDTO createdUser = new UserDTO(++idCount, user.getName(), user.getEmail(), user.getAge(), new ArrayList<>());
+    public User createUser(User user) {
+        User createdUser = new User(++idCount, user.getName(), user.getEmail(), user.getAge(), new ArrayList<>());
         mapUsers.put(createdUser.getId(), createdUser);
         return createdUser;
     }
 
-    public UserDTO getUserById(Long id) {
-        return mapUsers.get(id);
-    }
-
-    public void createPetForUser(PetDTO pet) {
-        Optional<UserDTO> user = Optional.ofNullable(getUserById(pet.getUser()));
-        if(user.isEmpty()) {
+    public User getUserById(Long id) {
+        Optional<User> user = Optional.ofNullable(mapUsers.get(id));
+        if (user.isEmpty()){
             throw new NoSuchElementException("User not found");
         }
-        user.get().getPets().add(pet);
+        return user.get();
+    }
+
+    public void createPetForUser(Pet pet) {
+        User user = getUserById(pet.getId());
+        user.getPets().add(pet);
     }
 
     public void deleteUserById(Long id) {
-        Optional<UserDTO> user = Optional.ofNullable(getUserById(id));
-        if(user.isEmpty()){
-            throw new NoSuchElementException("User not found");
-        }
+        User user = getUserById(id);
 
-        user.get().getPets()
+        user.getPets()
                 .stream()
-                .map(PetDTO::getId)
+                .map(Pet::getId)
                 .forEach(petService::deletePetById);
 
         mapUsers.remove(id);
     }
 
     public void deletePetForUser(Long userId, Long petId) {
-        Optional<UserDTO> user = Optional.ofNullable(getUserById(userId));
-        if(user.isEmpty()){
-            throw new NoSuchElementException("User not found");
-        }
-        UserDTO updatedUser = user.get();
+        User updatedUser = getUserById(userId);
 
-        List<PetDTO> updatedPets = updatedUser.getPets()
+        List<Pet> updatedPets = updatedUser.getPets()
                 .stream()
                 .filter(pet -> !pet.getId().equals(petId))
                 .toList();
@@ -66,22 +60,20 @@ public class UserService {
         updatedUser.setPets(updatedPets);
     }
 
-    public UserDTO updateUser(Long id, UserDTO user) {
-        Optional<UserDTO> optionalUser = Optional.ofNullable(getUserById(id));
-        if(optionalUser.isEmpty()){
-            throw new NoSuchElementException("User not found");
-        }
-        UserDTO updatedUser = new UserDTO(id, user.getName(), user.getEmail(), user.getAge(), user.getPets());
+    public User updateUser(Long id, User user) {
+        User findedUser = getUserById(id);
+
+        User updatedUser = new User(id, user.getName(), user.getEmail(), user.getAge(), user.getPets());
 
         if(Objects.isNull(updatedUser.getPets())) {
-            updatedUser.setPets(optionalUser.get().getPets());
+            updatedUser.setPets(findedUser.getPets());
         }
         mapUsers.put(id, updatedUser);
         return updatedUser;
     }
 
-    public void updatePetForUser(Long user, PetDTO oldValuePet, PetDTO updatedPet) {
-        Optional<UserDTO> optionalUser = Optional.ofNullable(getUserById(user));
+    public void updatePetForUser(Long user, Pet oldValuePet, Pet updatedPet) {
+        Optional<User> optionalUser = Optional.ofNullable(getUserById(user));
         if(optionalUser.isEmpty()){
             throw new NoSuchElementException("User not found");
         }
@@ -89,7 +81,7 @@ public class UserService {
         optionalUser.get().getPets().add(updatedPet);
     }
 
-    public List<UserDTO> getAllUsers() {
+    public List<User> getAllUsers() {
         return mapUsers.values()
                 .stream()
                 .toList();

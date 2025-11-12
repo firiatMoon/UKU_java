@@ -2,14 +2,15 @@ package uku.java.JavaBackend.MVC.services;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import uku.java.JavaBackend.MVC.models.PetDTO;
+import uku.java.JavaBackend.MVC.models.Pet;
+import uku.java.JavaBackend.MVC.models.User;
 
 import java.util.*;
 
 @Service
 public class PetService {
 
-    private final Map<Long, PetDTO> mapPets;
+    private final Map<Long, Pet> mapPets;
     private final UserService userService;
     private Long idCount;
 
@@ -19,39 +20,41 @@ public class PetService {
         this.idCount = 0L;
     }
 
-    public PetDTO createPet(PetDTO pet) {
-        PetDTO createdPet = new PetDTO(++idCount, pet.getName(), pet.getUser());
+    public Pet createPet(Pet pet) {
+        User user = userService.getUserById(pet.getUser());
+
+        Pet createdPet = new Pet(++idCount, pet.getName(), user.getId());
         mapPets.put(createdPet.getId(), createdPet);
         userService.createPetForUser(createdPet);
         return createdPet;
     }
 
-    public PetDTO getPetById(Long id) {
-        return mapPets.get(id);
+    public Pet getPetById(Long id) {
+        Optional<Pet> pet = Optional.ofNullable(mapPets.get(id));
+        if (pet.isEmpty()){
+            throw new NoSuchElementException("Pet not found");
+        }
+        return pet.get();
     }
 
-    public List<PetDTO> getAllPets() {
+    public List<Pet> getAllPets() {
         return mapPets.values()
                 .stream()
                 .toList();
     }
 
     public void deletePetById(Long id) {
-        Optional<PetDTO> deletedPet = Optional.ofNullable(getPetById(id));
-        if(deletedPet.isEmpty()){
-            throw new NoSuchElementException("Pet not found");
-        }
-        userService.deletePetForUser(deletedPet.get().getUser(), id);
+        Pet pet = getPetById(id);
+
+        userService.deletePetForUser(pet.getUser(), id);
         mapPets.remove(id);
     }
 
-    public PetDTO updatePet(Long id, PetDTO pet) {
-        Optional<PetDTO> optionalPet = Optional.ofNullable(getPetById(id));
-        if(optionalPet.isEmpty()){
-            throw new NoSuchElementException("Pet not found");
-        }
-        PetDTO updatedPet = new PetDTO(id, pet.getName(), pet.getUser());
-        userService.updatePetForUser(pet.getUser(), optionalPet.get(), updatedPet);
+    public Pet updatePet(Long id, Pet pet) {
+        Pet findedPet = getPetById(id);
+
+        Pet updatedPet = new Pet(id, pet.getName(), pet.getUser());
+        userService.updatePetForUser(pet.getUser(), findedPet, updatedPet);
         mapPets.put(id, updatedPet);
         return updatedPet;
     }
