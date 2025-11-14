@@ -1,17 +1,11 @@
-package uku.java.JavaBackend.MVC.models;
+package uku.java.JavaBackend.MVC.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
-import uku.java.JavaCore.StreamAPI.Customer;
-import uku.java.JavaCore.StreamAPI.Order;
 
 import java.util.List;
-import java.util.Set;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User {
-    @Null
-    private Long id;
+public class UserDTO {
 
     @NotBlank(message = "Please enter your name.")
     @Size(max=30, message = "The name length must not exceed 30 characters.")
@@ -27,25 +21,16 @@ public class User {
     private Integer age;
 
     @Null
-    private List<Pet> pets;
+    private List<PetDTO> pets;
 
-    public User(Long id, String name, String email, Integer age, List<Pet> pets) {
-        this.id = id;
+    public UserDTO(String name, String email, Integer age, List<PetDTO> pets) {
         this.name = name;
         this.email = email;
         this.age = age;
         this.pets = pets;
     }
 
-    public User() {}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public UserDTO() {}
 
     public String getName() {
         return name;
@@ -71,12 +56,11 @@ public class User {
         this.age = age;
     }
 
-    public List<Pet> getPets() {
+    public List<PetDTO> getPets() {
         return pets;
     }
 
-    public void setPets(List<Pet> pets) {
+    public void setPets(List<PetDTO> pets) {
         this.pets = pets;
     }
-
 }

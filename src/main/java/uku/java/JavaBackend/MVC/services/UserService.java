@@ -1,10 +1,13 @@
 package uku.java.JavaBackend.MVC.services;
 
 import org.springframework.stereotype.Service;
+import uku.java.JavaBackend.MVC.dto.PetDTO;
+import uku.java.JavaBackend.MVC.dto.UserDTO;
 import uku.java.JavaBackend.MVC.models.Pet;
 import uku.java.JavaBackend.MVC.models.User;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -85,5 +88,31 @@ public class UserService {
         return mapUsers.values()
                 .stream()
                 .toList();
+    }
+
+    public UserDTO convertToUserDTO(User user) {
+        UserDTO userDTO = new UserDTO();
+
+        List<Pet> pets = user.getPets();
+        List<PetDTO> petsDTO = pets.stream().map(petService::convertToPetDTO).toList();
+
+        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setAge(user.getAge());
+        userDTO.setPets(petsDTO);
+        return userDTO;
+    }
+
+    public User convertToUser(UserDTO userDTO) {
+        User user = new User();
+
+        List<PetDTO> petsDTO = userDTO.getPets();
+        List<Pet> pets = petsDTO.stream().map(petService::convertToPet).toList();
+
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user.setAge(userDTO.getAge());
+        user.setPets(pets);
+        return user;
     }
 }

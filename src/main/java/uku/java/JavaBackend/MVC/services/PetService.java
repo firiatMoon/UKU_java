@@ -2,6 +2,8 @@ package uku.java.JavaBackend.MVC.services;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import uku.java.JavaBackend.MVC.dto.PetDTO;
+import uku.java.JavaBackend.MVC.dto.UserDTO;
 import uku.java.JavaBackend.MVC.models.Pet;
 import uku.java.JavaBackend.MVC.models.User;
 
@@ -57,5 +59,21 @@ public class PetService {
         userService.updatePetForUser(pet.getUser(), findedPet, updatedPet);
         mapPets.put(id, updatedPet);
         return updatedPet;
+    }
+
+    public PetDTO convertToPetDTO(Pet pet) {
+        PetDTO petDTO = new PetDTO();
+
+        petDTO.setName(pet.getName());
+        petDTO.setUser(pet.getUser());
+        return petDTO;
+    }
+
+    public Pet convertToPet(PetDTO petDTO) {
+        Pet pet = new Pet();
+
+        pet.setName(petDTO.getName());
+        pet.setUser(petDTO.getUser());
+        return pet;
     }
 }
